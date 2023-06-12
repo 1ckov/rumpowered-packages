@@ -17,10 +17,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: sync repo
+      - name: prepare pacman
         run: |
           sed -i "s#\${PWD}#${PWD}#g" pacman.conf
           cp pacman.conf /etc/pacman.conf
           pacman -Syu --noconfirm aurutils
+
+      - name: sync repo
+        run: |
           AUR_ASROOT=1 ./aursync.sh
+
+      ## TODO: sign packages with new keys and push to repo
           
