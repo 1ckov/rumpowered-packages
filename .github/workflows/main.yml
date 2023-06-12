@@ -1,0 +1,26 @@
+---
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:base-devel
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: sync repo
+        run: |
+          sed -i "s#\${PWD}#${PWD}#g" pacman.conf
+          cp pacman.conf /etc/pacman.conf
+          pacman -Syu --noconfirm aurutils
+          ./aursync.sh
+          
